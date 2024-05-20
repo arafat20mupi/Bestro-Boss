@@ -1,23 +1,18 @@
 import { useEffect, useState } from "react";
 import SectionTitle from "../../Components/SectionTitle";
 import ManuItem from "../Shared/ManuItem";
+import useManu from "../../Hooks/UseManu";
 
 const PupolarManu = () => {
-    const [manu, setManu] = useState([]);
-    useEffect(() => {
-        fetch('Manu.json')
-            .then(res => res.json())
-            .then(data => {
-                const PopulerItems = data.filter(item => item.category === 'popular')
-                setManu(PopulerItems)
-            })
-    }, [])
+    const [manu] = useManu()
+    const populer = manu.filter( (manu) => manu.category === "popular")
+  
     return (
         <div className="mb-12 container mx-auto">
             <SectionTitle heading={"FROM OUR MENU"} subHeading={'Populer Manu'} ></SectionTitle>
             <div className="grid gap-10 md:grid-cols-2 ">
                 {
-                    manu.map(manu => <ManuItem key={manu._id}
+                    populer.map(manu => <ManuItem key={manu._id}
                         manu={manu}
                     ></ManuItem>)
                 }
