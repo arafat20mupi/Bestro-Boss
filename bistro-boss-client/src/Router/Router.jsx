@@ -7,6 +7,7 @@ import Login from "../Pages/Login/Login";
 import Register from "../Pages/Login/Register";
 import Carts from "../Deshboard/Carts/Carts";
 import Dashboard from "../Layouts/Dashboard";
+import Contact from "../Pages/Contact/Contact";
 
 
 const Router = createBrowserRouter([
@@ -35,7 +36,8 @@ const Router = createBrowserRouter([
                 element: <Register></Register>
             },
             {
-                path: 'contact'
+                path: '/contact',
+                element: <Contact></Contact>
             }
             
         ]

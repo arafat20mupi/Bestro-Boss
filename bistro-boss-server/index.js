@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 
 const port = process.env.PORT || 5000;
@@ -49,14 +49,26 @@ async function run() {
       const result = await cartsCollection.insertOne(cartItem);
       res.send(result);
     })
+    app.get('/arr', async (req, res) => {
+      const result = await cartsCollection.find().toArray();
+      res.send(result);
+    })
     app.get('/carts', async (req, res) => {
       const email = req?.query?.email;
-      console.log(email);
       if (!email) {
         return res.status(400).send('Email parameter is missing.');
       }
       const query = { email: email };
       const result = await cartsCollection.find(query).toArray();
+      res.send(result);
+    })
+    app.delete( '/carts/:id' , async ( req , res ) => {
+      const id = req?.params?.id;
+      if (!id) {
+        return res.status(400).send('Id parameter is missing.');
+      }
+      const query = { _id: new ObjectId (id) };
+      const result = await cartsCollection.deleteOne(query);
       res.send(result);
     })
     // Send a ping to confirm a successful connection

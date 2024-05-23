@@ -3,11 +3,13 @@ import { NavLink, Outlet, } from "react-router-dom";
 import { MdPayments, MdRateReview ,MdEmail } from "react-icons/md";
 import { RiMacbookFill } from "react-icons/ri";
 import { FiMenu } from "react-icons/fi";
+import UseCart from "../Hooks/UseCart";
 
 const Dashboard = () => {
+    const [cart] = UseCart();
     return (
-        <div>
-            <div className='w-64 min-h-screen bg-orange-400 '>
+        <div className="flex">
+            <div className='w-64  min-h-screen bg-orange-400 '>
                 <ul className="menu ">
                     <li>
                         <NavLink to={'/deshBoard/userHome'}>
@@ -30,7 +32,7 @@ const Dashboard = () => {
                     <li>
                         <NavLink to={'/deshBoard/cart'}>
                             <FaShoppingCart></FaShoppingCart>
-                            MY Cart
+                            MY Cart {cart.length}
                         </NavLink>
                     </li>
 
@@ -75,7 +77,7 @@ const Dashboard = () => {
               
 
             </div>
-            <div>
+            <div className="w-full px-6 lg:px-16">
                 <Outlet></Outlet>
             </div>
         </div>
