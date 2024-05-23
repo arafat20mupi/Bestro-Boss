@@ -2,6 +2,7 @@ import { Parallax } from 'react-parallax';
 const Cover = ({ img, title }) => {
     return (
         <Parallax
+            className='rounded-md'
             blur={{ min: -15, max: 15 }}
             bgImage={img}
             bgImageAlt="the dog"

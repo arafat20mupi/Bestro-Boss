@@ -7,6 +7,7 @@ import { IoMdEyeOff } from "react-icons/io";
 import { FaEye } from "react-icons/fa";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import logImg from '../../assets/others/authentication2.png'
+import { Helmet } from "react-helmet-async";
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -49,6 +50,9 @@ const Register = () => {
 
     return (
         <div className="hero min-h-screen bg-base-200">
+            <Helmet>
+                <title>Bistro || Register</title>
+            </Helmet>
             <div className="hero-content flex-col md:flex-row">
                 <div className="card flex-1 md:w-1/2 max-w-sm shadow-2xl bg-base-100">
                     <form onSubmit={handleSubmit(onSubmit)} className="mt-10">

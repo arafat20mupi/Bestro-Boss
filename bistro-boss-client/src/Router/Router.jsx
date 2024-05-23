@@ -5,6 +5,8 @@ import Manu from "../Pages/Manu/Manu";
 import Order from "../Pages/Order/Order";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Login/Register";
+import Carts from "../Deshboard/Carts/Carts";
+import Dashboard from "../Layouts/Dashboard";
 
 
 const Router = createBrowserRouter([
@@ -31,9 +33,23 @@ const Router = createBrowserRouter([
             {
                 path: '/register',
                 element: <Register></Register>
+            },
+            {
+                path: 'contact'
             }
+            
         ]
     },
+    {
+        path: 'deshBoard',
+        element: <Dashboard></Dashboard>,
+        children: [
+            {
+                path: 'cart',
+                element: <Carts></Carts>
+            }
+        ]
+    }
 ]);
 
 

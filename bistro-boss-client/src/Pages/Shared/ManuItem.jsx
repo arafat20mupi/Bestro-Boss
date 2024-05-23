@@ -1,10 +1,10 @@
 
 const ManuItem = ({manu}) => {
-    const {name ,recipe ,image ,category ,price} = manu
+    const {name ,recipe ,image ,price} = manu
 
     return (
         <div className="flex space-x-2">
-            <img src={image} alt="" className="w-[120px] " style={{borderRadius:'0 200px 200px 200px' }}/>
+            <img src={image} alt="" className="w-[120px]  " style={{borderRadius:'0 200px 200px 200px' }}/>
             <div>
                 <h3>{name}----------</h3>
                 <p>{recipe}</p>

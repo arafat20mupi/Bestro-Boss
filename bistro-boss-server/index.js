@@ -1,9 +1,10 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config()
 
-const port = process.env.PORT || 5000 ;
+const port = process.env.PORT || 5000;
 
 // middleware
 
@@ -11,7 +12,6 @@ app.use(cors());
 app.use(express.json());
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ykgi9mv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -30,21 +30,35 @@ async function run() {
 
     const manuCollection = client.db('bistrodb').collection('manu')
     const reviewCollection = client.db('bistrodb').collection('reveiws')
+    const cartsCollection = client.db('bistrodb').collection('cart')
 
     // manu Collection
-    app.get('/manu' , async (req, res) => {
-        const result = await manuCollection.find().toArray();
-        res.send(result);
+    app.get('/manu', async (req, res) => {
+      const result = await manuCollection.find().toArray();
+      res.send(result);
     })
 
     // review Collection
-    app.get('/review' , async (req, res) => {
-        const result = await reviewCollection.find().toArray();
-        res.send(result);
+    app.get('/review', async (req, res) => {
+      const result = await reviewCollection.find().toArray();
+      res.send(result);
     })
-
-
-
+    // Cart Collection
+    app.post('/carts', async (req, res) => {
+      const cartItem = req.body;
+      const result = await cartsCollection.insertOne(cartItem);
+      res.send(result);
+    })
+    app.get('/carts', async (req, res) => {
+      const email = req?.query?.email;
+      console.log(email);
+      if (!email) {
+        return res.status(400).send('Email parameter is missing.');
+      }
+      const query = { email: email };
+      const result = await cartsCollection.find(query).toArray();
+      res.send(result);
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -56,9 +70,9 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('boss is sitings');
+  res.send('boss is sitings');
 })
 
 app.listen(port, () => {
-    console.log(`server is running on port ${port}`);
+  console.log(`server is running on port ${port}`);
 })

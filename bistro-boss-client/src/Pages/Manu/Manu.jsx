@@ -17,7 +17,7 @@ const Manu = () => {
 
 
     return (
-        <div>
+        <div className="container mx-auto">
             <Helmet>
                 <title>
                     Bistro | Manu
