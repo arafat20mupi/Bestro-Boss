@@ -1,5 +1,5 @@
 import UseAuth from "../Hooks/UseAuth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
 import UseAxiosSecure from "../Hooks/UseAxiosSecure";
 import UseCart from "../Hooks/UseCart";
@@ -7,9 +7,11 @@ import UseCart from "../Hooks/UseCart";
 const FoodCard = ({ item }) => {
     const { name, image, price, recipe, _id } = item;
     const { user } = UseAuth();
-    const navigate = useNavigate
+    const navigate = useNavigate();
+    const location = useLocation();
+    console.log(location);
     const axiosSecure = UseAxiosSecure();
-    const [ , refetch] = UseCart()
+    const [, refetch] = UseCart()
 
     const handleAddToCart = () => {
         if (user && user?.email) {
@@ -46,11 +48,13 @@ const FoodCard = ({ item }) => {
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Yes, Log In"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    navigate('/login', { state: { from: location } });
-                }
-            });
+            })
+                .then((result) => {
+                    console.log(result);
+                    if (result.isConfirmed === true) {
+                        navigate('/login', { state: { from: location } });
+                    }
+                });
         }
     }
     return (

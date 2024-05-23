@@ -7,6 +7,9 @@ import UseCart from "../Hooks/UseCart";
 
 const Dashboard = () => {
     const [cart] = UseCart();
+    // Todo : get the is admin value from the database
+    const isAdmin = true
+    
     return (
         <div className="flex">
             <div className='w-64  min-h-screen bg-orange-400 '>

@@ -31,6 +31,25 @@ async function run() {
     const manuCollection = client.db('bistrodb').collection('manu')
     const reviewCollection = client.db('bistrodb').collection('reveiws')
     const cartsCollection = client.db('bistrodb').collection('cart')
+    const UserCollection = client.db('bistrodb').collection('user')
+
+    // User collection
+    app.post('/users' , async( req , res ) => {
+      const user = req.body;
+
+      const quary = {email: user?.email}
+      const existingUser = await UserCollection.findOne(quary);
+      if (existingUser) {
+        return res.status(400).send('User already exists');
+      }
+
+      const result = await UserCollection.insertOne(user);
+      res.send(result);
+    })
+    app.get('/users', async (req, res) => {
+      const result = await UserCollection.find().toArray();
+      res.send(result);
+    })
 
     // manu Collection
     app.get('/manu', async (req, res) => {

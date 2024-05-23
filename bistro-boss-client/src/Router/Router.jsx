@@ -8,6 +8,7 @@ import Register from "../Pages/Login/Register";
 import Carts from "../Deshboard/Carts/Carts";
 import Dashboard from "../Layouts/Dashboard";
 import Contact from "../Pages/Contact/Contact";
+import PrivateRouter from "./PrivateRouter";
 
 
 const Router = createBrowserRouter([
@@ -44,7 +45,7 @@ const Router = createBrowserRouter([
     },
     {
         path: 'deshBoard',
-        element: <Dashboard></Dashboard>,
+        element: <PrivateRouter><Dashboard></Dashboard></PrivateRouter> ,
         children: [
             {
                 path: 'cart',
