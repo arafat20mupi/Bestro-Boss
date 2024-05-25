@@ -5,10 +5,11 @@ import Manu from "../Pages/Manu/Manu";
 import Order from "../Pages/Order/Order";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Login/Register";
-import Carts from "../Deshboard/Carts/Carts";
 import Dashboard from "../Layouts/Dashboard";
 import Contact from "../Pages/Contact/Contact";
 import PrivateRouter from "./PrivateRouter";
+import AllUsers from "../Deshboard/AllUsers";
+import Carts from "../Deshboard/Carts";
 
 
 const Router = createBrowserRouter([
@@ -50,6 +51,10 @@ const Router = createBrowserRouter([
             {
                 path: 'cart',
                 element: <Carts></Carts>
+            },
+            {
+                path: 'allUsers',
+                element: <AllUsers></AllUsers>
             }
         ]
     }

@@ -1,13 +1,15 @@
+/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import auth from "../Firebase/firebase.config";
+import UseAxiosPublic from "../Hooks/UseAxiosPublic";
 export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [reload, setReload] = useState(false);
-
+    const axiosPublic = UseAxiosPublic();
 
     const GoogleProvider = new GoogleAuthProvider();
     const FacebookProvider = new FacebookAuthProvider();
@@ -54,6 +56,21 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, user => {
             setUser(user)
+            if (currentUser) {
+                // get token and store client
+                const userInfo = { email: currentUser.email }
+                axiosPublic.post('/jwt' , userInfo )
+                .then( res => {
+                    if(res.data.token){
+                        localStorage.setItem('token', res.data.token)
+                    }
+                })
+            }
+            else {
+                // TODO : remove token stored in the client side
+                localStorage.removeItem('token');
+                // setReload(true); 
+            }
             setLoading(false)
         });
         return () => {
@@ -71,5 +88,4 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
-    
-  
+

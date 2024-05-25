@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 
@@ -33,11 +34,19 @@ async function run() {
     const cartsCollection = client.db('bistrodb').collection('cart')
     const UserCollection = client.db('bistrodb').collection('user')
 
+
+    // jwn collection
+    app.post('jwt', async (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+      res.send({ token })
+    })
+
     // User collection
-    app.post('/users' , async( req , res ) => {
+    app.post('/users', async (req, res) => {
       const user = req.body;
 
-      const quary = {email: user?.email}
+      const quary = { email: user?.email }
       const existingUser = await UserCollection.findOne(quary);
       if (existingUser) {
         return res.status(400).send('User already exists');
@@ -50,6 +59,26 @@ async function run() {
       const result = await UserCollection.find().toArray();
       res.send(result);
     })
+    app.delete('/users/:id', async (req, res) => {
+      const id = req?.params?.id;
+      if (!id) {
+        return res.status(400).send('Id parameter is missing.');
+      }
+      const query = { _id: new ObjectId(id) };
+      const result = await UserCollection.deleteOne(query);
+      res.send(result);
+    })
+
+    app.patch('/users/admin/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: { role: 'admin' },
+      };
+      const result = await UserCollection.updateOne(query, updatedDoc);
+      res.send(result);
+
+    });
 
     // manu Collection
     app.get('/manu', async (req, res) => {
@@ -81,12 +110,12 @@ async function run() {
       const result = await cartsCollection.find(query).toArray();
       res.send(result);
     })
-    app.delete( '/carts/:id' , async ( req , res ) => {
+    app.delete('/carts/:id', async (req, res) => {
       const id = req?.params?.id;
       if (!id) {
         return res.status(400).send('Id parameter is missing.');
       }
-      const query = { _id: new ObjectId (id) };
+      const query = { _id: new ObjectId(id) };
       const result = await cartsCollection.deleteOne(query);
       res.send(result);
     })

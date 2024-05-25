@@ -1,6 +1,5 @@
 import { FaGoogle } from "react-icons/fa";
 import UseAuth from "../Hooks/UseAuth";
-import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import UseAxiosPublic from "../Hooks/UseAxiosPublic";
@@ -8,7 +7,6 @@ import UseAxiosPublic from "../Hooks/UseAxiosPublic";
 const SocialLogin = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { reset } = useForm();
     const from = location.state?.from?.pathname || "/";
     const axiosPublic = UseAxiosPublic()
 
@@ -19,8 +17,9 @@ const SocialLogin = () => {
         .then(( result ) => {
             console.log(result.user);
             const userInfo = {
-                name: result.user?.displayName,
-                email: result.user?.email,
+                name: result?.user?.displayName,
+                email: result?.user?.email,
+                role: 'user'
             }
             axiosPublic.post("/users", userInfo)
             .then((res) => {
