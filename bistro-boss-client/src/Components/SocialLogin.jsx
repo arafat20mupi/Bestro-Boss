@@ -10,20 +10,16 @@ const SocialLogin = () => {
     const from = location.state?.from?.pathname || "/";
     const axiosPublic = UseAxiosPublic()
 
-    console.log(from);
     const { googleSignIn } = UseAuth();
     const handleGoogleSignIn = () => {
         googleSignIn()
         .then(( result ) => {
-            console.log(result.user);
             const userInfo = {
                 name: result?.user?.displayName,
                 email: result?.user?.email,
-                role: 'user'
             }
             axiosPublic.post("/users", userInfo)
-            .then((res) => {
-                 console.log(res);
+            .then(() => {
                  toast.success("User Registered Successfully");
                  navigate(from || "/");
              })
@@ -31,7 +27,7 @@ const SocialLogin = () => {
     }
     return (
         <div className="px-12">
-            <button onClick={handleGoogleSignIn} aria-label="Log in with Google" className="flex btn rounded-3xl items-center justify-center w-full ">
+            <button onClick={handleGoogleSignIn} aria-label="Log in with Google" className="flex btn bg-indigo-800 text-white mt-2 rounded-3xl items-center justify-center w-full ">
             <FaGoogle></FaGoogle> Continue To Google 
             </button>
         </div>

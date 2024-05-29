@@ -13,7 +13,7 @@ import SocialLogin from "../../Components/SocialLogin";
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    const { createUser, upDateProfile } = useContext(AuthContext);
+    const { createUser, updateUserProfile } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
     const [show, setShow] = useState(false);
@@ -24,13 +24,12 @@ const Register = () => {
 
         createUser(usernameOrEmail, password)
             .then(() => {
-                upDateProfile(fullName, photoURL)
+                updateUserProfile(fullName, photoURL)
                     .then(() => {
                         const userInfo = {
                             email: usernameOrEmail,
                             photoURL: photoURL,
                             name: fullName,
-
                         }
                         AxiosPublic.post('/users', userInfo)
                             .then((res) => {
@@ -55,7 +54,7 @@ const Register = () => {
                 <title>Bistro || Register</title>
             </Helmet>
             <div className="hero-content flex-col md:flex-row">
-                <div className="card flex-1 md:w-1/2 max-w-sm shadow-2xl bg-base-100">
+                <div className="card flex-1 md:w-1/2 max-w-lg shadow-2xl bg-base-100">
                     <form onSubmit={handleSubmit(onSubmit)} className="mt-10">
                         <div className="w-full max-w-md p-8 space-y-3 rounded-xl border bg-white font-sans mx-auto">
                             <h1 className="text-3xl font-bold text-center text-indigo-600">Create an account</h1>
@@ -118,23 +117,23 @@ const Register = () => {
                                 <span className="bg-indigo-800 absolute inset-0 translate-x-full group-hover:translate-x-0 group-hover:delay-300 delay-100 duration-1000"></span>
                                 <span className="bg-indigo-800 absolute inset-0 -translate-x-full group-hover:translate-x-0 group-hover:delay-300 delay-100 duration-1000"></span>
                             </button>
-                            <div className="flex items-center pt-4 space-x-2">
-                                <div className="flex-1 h-px bg-gray-300"></div>
-                                <p className="text-sm text-gray-600">Create an account with social accounts</p>
-                                <div className="flex-1 h-px bg-gray-300"></div>
-                            </div>
-                            <div className=' my-2 space-y-3'>
-                                <SocialLogin ></SocialLogin>
-                                <SocialLogin ></SocialLogin>
-                            </div>
-                            <p className="text-sm text-center gap-2 flex justify-center sm:px-6">
-                                Already have an account?
-                                <Link to={"/login"} className="underline hover:text-indigo-600">
-                                    Login
-                                </Link>
-                            </p>
+
                         </div>
                     </form>
+                    <div className="flex items-center mt-2  space-x-2">
+                        <div className="flex-1 h-px bg-gray-300"></div>
+                        <p className="text-sm text-gray-600">Create an account with social accounts</p>
+                        <div className="flex-1 h-px bg-gray-300"></div>
+                    </div>
+                    <div className=''>
+                        <SocialLogin ></SocialLogin>
+                    </div>
+                    <p className="text-sm my-2 text-center gap-2 flex justify-center sm:px-6">
+                        Already have an account?
+                        <Link to={"/login"} className="underline  hover:text-indigo-600">
+                            Login
+                        </Link>
+                    </p>
                 </div>
                 <div className="text-center flex-1 md:w-1/2 lg:text-left">
                     <img src={logImg} alt="" />

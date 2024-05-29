@@ -4,11 +4,12 @@ import { MdPayments, MdRateReview, MdEmail } from "react-icons/md";
 import { RiMacbookFill } from "react-icons/ri";
 import { FiMenu } from "react-icons/fi";
 import UseCart from "../Hooks/UseCart";
+import UseAdmin from "../Hooks/UseAdmin";
 
 const Dashboard = () => {
     const [cart] = UseCart();
-    // Todo : get the is admin value from the database
-    const isAdmin = true
+    // get the is admin value from the database
+    const [isAdmin] = UseAdmin()
 
     return (
         <div className="flex">
@@ -23,7 +24,7 @@ const Dashboard = () => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to={'/deshBoard/items'}>
+                                <NavLink to={'/deshBoard/addItems'}>
                                     <FaUtensils />
                                     Add Items
                                 </NavLink>

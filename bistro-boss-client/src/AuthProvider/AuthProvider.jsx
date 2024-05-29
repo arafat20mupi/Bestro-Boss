@@ -1,10 +1,21 @@
-/* eslint-disable no-undef */
-/* eslint-disable react/prop-types */
-import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
+import {
+    FacebookAuthProvider,
+    GithubAuthProvider,
+    GoogleAuthProvider,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    sendPasswordResetEmail,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    signOut,
+    updateProfile
+} from "firebase/auth";
 import auth from "../Firebase/firebase.config";
 import UseAxiosPublic from "../Hooks/UseAxiosPublic";
+
 export const AuthContext = createContext(null);
+
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -20,19 +31,28 @@ const AuthProvider = ({ children }) => {
         return createUserWithEmailAndPassword(auth, email, password);
     };
 
-    const upDateProfile = (fullName, photoURL) => {
+    const updateUserProfile = (fullName, photoURL) => {
         return updateProfile(auth.currentUser, {
-            displayName: fullName, photoURL: photoURL
+            displayName: fullName,
+            photoURL: photoURL
         })
+            .then(() => {
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    displayName: fullName,
+                    photoURL: photoURL
+                }))
+            })
+
     };
 
     const signIn = (email, password) => {
         setLoading(true);
-        return signInWithEmailAndPassword(auth, email, password)
+        return signInWithEmailAndPassword(auth, email, password);
     };
 
-
     const logOut = () => {
+        setLoading(true);
         return signOut(auth);
     };
 
@@ -40,10 +60,12 @@ const AuthProvider = ({ children }) => {
         setLoading(true);
         return signInWithPopup(auth, GoogleProvider);
     };
+
     const facebookSignIn = () => {
         setLoading(true);
         return signInWithPopup(auth, FacebookProvider);
     };
+
     const githubSignIn = () => {
         setLoading(true);
         return signInWithPopup(auth, GithubProvider);
@@ -54,32 +76,44 @@ const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        const unSubscribe = onAuthStateChanged(auth, user => {
-            setUser(user)
-            if (currentUser) {
-                // get token and store client
-                const userInfo = { email: currentUser.email }
-                axiosPublic.post('/jwt' , userInfo )
-                .then( res => {
-                    if(res.data.token){
-                        localStorage.setItem('token', res.data.token)
-                    }
-                })
-            }
-            else {
-                // TODO : remove token stored in the client side
+        const unSubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user);
+            setLoading(false);
+            if (user) {
+                const userInfo = { email: user?.email };
+                axiosPublic.post('/jwt', userInfo)
+                    .then(res => {
+                        if (res.data.token) {
+                            localStorage.setItem('token', res.data.token);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Failed to get token", err);
+                    });
+            } else {
                 localStorage.removeItem('token');
-                // setReload(true); 
             }
-            setLoading(false)
         });
+
         return () => {
             unSubscribe();
-        }
-    }, [])
+        };
+    }, [axiosPublic]);
 
+    const authInfo = {
+        user,
+        createUser,
+        signIn,
+        logOut,
+        googleSignIn,
+        facebookSignIn,
+        githubSignIn,
+        resetPassword,
+        loading,
+         updateUserProfile,
+        setReload
+    };
 
-    const authInfo = { user, createUser, signIn, logOut, googleSignIn, facebookSignIn, githubSignIn, resetPassword, loading, upDateProfile, setReload };
     return (
         <AuthContext.Provider value={authInfo}>
             {children}
@@ -88,4 +122,3 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
-

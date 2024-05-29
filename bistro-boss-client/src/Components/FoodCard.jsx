@@ -9,7 +9,6 @@ const FoodCard = ({ item }) => {
     const { user } = UseAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    console.log(location);
     const axiosSecure = UseAxiosSecure();
     const [, refetch] = UseCart()
 
@@ -22,7 +21,6 @@ const FoodCard = ({ item }) => {
                 image,
                 price,
             }
-            console.log('Adding item to cart:', cartItem);
             axiosSecure.post('/carts', cartItem)
                 .then(res => {
                     if (res.data.insertedId) {
@@ -50,7 +48,6 @@ const FoodCard = ({ item }) => {
                 confirmButtonText: "Yes, Log In"
             })
                 .then((result) => {
-                    console.log(result);
                     if (result.isConfirmed === true) {
                         navigate('/login', { state: { from: location } });
                     }

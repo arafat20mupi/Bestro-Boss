@@ -10,6 +10,9 @@ import Contact from "../Pages/Contact/Contact";
 import PrivateRouter from "./PrivateRouter";
 import AllUsers from "../Deshboard/AllUsers";
 import Carts from "../Deshboard/Carts";
+import AddItems from "../Deshboard/AddItems";
+import AdminRouter from "./AdminRouter";
+import ManageItems from "../Deshboard/ManageItems";
 
 
 const Router = createBrowserRouter([
@@ -45,16 +48,26 @@ const Router = createBrowserRouter([
         ]
     },
     {
-        path: 'deshBoard',
+        path: '/deshBoard',
         element: <PrivateRouter><Dashboard></Dashboard></PrivateRouter> ,
         children: [
             {
                 path: 'cart',
                 element: <Carts></Carts>
             },
+
+            // Admin Router
             {
                 path: 'allUsers',
-                element: <AllUsers></AllUsers>
+                element: <AdminRouter><AllUsers></AllUsers></AdminRouter>
+            },
+            {
+                path: 'addItems',
+                element: <AdminRouter><AddItems></AddItems></AdminRouter>
+            },
+            {
+                path: 'manageItems',
+                element: <AdminRouter><ManageItems></ManageItems></AdminRouter>
             }
         ]
     }
