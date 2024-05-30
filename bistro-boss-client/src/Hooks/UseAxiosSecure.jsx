@@ -21,7 +21,7 @@ const UseAxiosSecure = () => {
         return response
     }, async (error) => {
         const stutus = error.response.stutus;
-        if (stutus === 401 || stutus === 403) {
+        if (stutus === 401 || stutus === 403 ) {
             await logOut()
             navigate('/login')
         }

@@ -79,7 +79,6 @@ async function run() {
       if (email !== req.decoded.email) {
         return res.status(403).send({ message: 'Forbiddan Access' });
       }
-      console.log(req.decoded.email ,req.params.email  );
       const quary = { email: email }
       const user = await UserCollection.findOne(quary);
       let admin = false;
@@ -122,19 +121,34 @@ async function run() {
       const result = await manuCollection.find().toArray();
       res.send(result);
     })
+    app.get('/manu/:id', async (req, res) => {
+      const id = req.params.id;
+      const quary = { _id : new ObjectId(id) };
+      const result = await manuCollection.findOne(quary);
+      res.send(result);
+    })
+    app.patch('/manu/:id' , async (req, res) =>{
+      const item = req.body;
+      const id = req.params.id;
+      const filter = { _id : new ObjectId(id) };
+      const updatedDoc = {
+        $set: {...item},
+      };
+      const result = await manuCollection.updateOne( filter , updatedDoc );
+      res.send(result);
+    })
 
     app.post('/manu',  verifyToken, verifyAdmin, async (req, res) => {
       const manu = req.body;
       const result = await manuCollection.insertOne(manu);
       res.send(result);
     })
-    app.delete( '/manu/:id' ,  verifyToken, verifyAdmin,async(req , res) => {
-      const id = req?.params?.id;
-      if (!id) {
-        return res.status(400).send('Id parameter is missing.');
-      }
+    app.delete('/manu/:id' ,verifyToken, verifyAdmin, async(req , res) => {
+      const id = req.params.id;
+      console.log(id)
       const query = { _id: new ObjectId(id) };
       const result = await manuCollection.deleteOne(query);
+      console.log(result)
       res.send(result);
     })
 
@@ -164,6 +178,7 @@ async function run() {
     })
     app.delete('/carts/:id', async (req, res) => {
       const id = req?.params?.id;
+      console.log(id)
       if (!id) {
         return res.status(400).send('Id parameter is missing.');
       }

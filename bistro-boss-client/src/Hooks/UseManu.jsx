@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react";
 
+import { useQuery } from "@tanstack/react-query";
+import UseAxiosPublic from "./UseAxiosPublic";
 const useManu = () => {
-    const [manu, setManu] = useState([]);
-    const [loading , setLoading] =useState(true)
-
-    useEffect(() => {
-        fetch('http://localhost:5000/manu')
-            .then(res => res.json())
-            .then(data => {
-                setManu(data)
-                setLoading(false)
-            })
-    }, [])
-    return [manu , loading];
+    const AxiosPublic = UseAxiosPublic()
+    const { data: manu = [], isPending: loading, refetch } = useQuery({
+        queryKey: ['manu'],
+        queryFn: async () => {
+            const res = await AxiosPublic.get('/manu')
+            return res.data
+        }
+    })
+    return [manu, loading, refetch];
 }
 export default useManu;

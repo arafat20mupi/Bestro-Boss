@@ -1,11 +1,12 @@
-import {  FaEdit, FaTrashAlt, } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, } from "react-icons/fa";
 import SectionTitle from "../Components/SectionTitle";
 import useManu from "../Hooks/UseManu";
 import Swal from "sweetalert2";
 import UseAxiosSecure from "../Hooks/UseAxiosSecure";
+import { Link } from "react-router-dom";
 
 const ManageItems = () => {
-    const [manu] = useManu();
+    const [manu, , refetch] = useManu();
     const axiosSecure = UseAxiosSecure()
 
     const handleDelete = (item) => {
@@ -17,19 +18,18 @@ const ManageItems = () => {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                axiosSecure.delete(`/manu/${item._id}`)
-                    .then(res => {
-                        if (res.data.deletedCount > 0) {
-                            Swal.fire({
-                                title: "Deleted!",
-                                text: "Your file has been deleted.",
-                                icon: "success"
-                            });
-                            // refetch()
-                        }
-                    })
+
+                const res = await axiosSecure.delete(`/manu/${item._id}`)
+                if (res.data.deletedCount > 0) {
+                    Swal.fire({
+                        title: `${item.name} has been deleted`,
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                }
+                refetch()
             }
         });
     }
@@ -73,13 +73,15 @@ const ManageItems = () => {
                                         </td>
                                         <td>{item.price}</td>
                                         <th>
-                                            <button
-                                                onClick={() => handleUpdate(item)}
-                                                className="btn btn-lg text-white bg-[#D1A054]"
-                                                aria-label={`Make  admin`}
-                                            >
-                                                <FaEdit className="text-x text-white" />
-                                            </button>
+                                            <Link to={`/deshBoard/updateItem/${item._id}`}>
+                                                <button
+                                                    onClick={() => handleUpdate(item)}
+                                                    className="btn btn-lg text-white bg-[#D1A054]"
+                                                    aria-label={`Make  admin`}
+                                                >
+                                                    <FaEdit className="text-x text-white" />
+                                                </button>
+                                            </Link>
                                         </th>
                                         <th>
                                             <button onClick={() => handleDelete(item)} className="btn btn-lg bg-red-600"><FaTrashAlt className="text-xl text-white"></FaTrashAlt> </button>

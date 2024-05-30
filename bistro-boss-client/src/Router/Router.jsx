@@ -13,6 +13,8 @@ import Carts from "../Deshboard/Carts";
 import AddItems from "../Deshboard/AddItems";
 import AdminRouter from "./AdminRouter";
 import ManageItems from "../Deshboard/ManageItems";
+import UpdateItems from "../Deshboard/Components/UpdateItems";
+import Payment from "../Deshboard/Payment";
 
 
 const Router = createBrowserRouter([
@@ -55,6 +57,10 @@ const Router = createBrowserRouter([
                 path: 'cart',
                 element: <Carts></Carts>
             },
+            {
+                path: 'payment',
+                element: <Payment></Payment>
+            },
 
             // Admin Router
             {
@@ -68,6 +74,11 @@ const Router = createBrowserRouter([
             {
                 path: 'manageItems',
                 element: <AdminRouter><ManageItems></ManageItems></AdminRouter>
+            },
+            {
+                path: 'updateItem/:id',
+                element: <AdminRouter><UpdateItems></UpdateItems></AdminRouter>,
+                loader: ({params}) => fetch(`http://localhost:5000/manu/${params.id}`)
             }
         ]
     }
