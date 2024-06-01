@@ -4,7 +4,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
-
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const port = process.env.PORT || 5000;
 
 // middleware
@@ -74,7 +74,7 @@ async function run() {
       res.send(result);
     })
 
-    app.get('/users/admin/:email', verifyToken, verifyAdmin , async (req, res) => {
+    app.get('/users/admin/:email', verifyToken, verifyAdmin, async (req, res) => {
       const email = req.params?.email;
       if (email !== req.decoded.email) {
         return res.status(403).send({ message: 'Forbiddan Access' });
@@ -123,27 +123,27 @@ async function run() {
     })
     app.get('/manu/:id', async (req, res) => {
       const id = req.params.id;
-      const quary = { _id : new ObjectId(id) };
+      const quary = { _id: new ObjectId(id) };
       const result = await manuCollection.findOne(quary);
       res.send(result);
     })
-    app.patch('/manu/:id' , async (req, res) =>{
+    app.patch('/manu/:id', async (req, res) => {
       const item = req.body;
       const id = req.params.id;
-      const filter = { _id : new ObjectId(id) };
+      const filter = { _id: new ObjectId(id) };
       const updatedDoc = {
-        $set: {...item},
+        $set: { ...item },
       };
-      const result = await manuCollection.updateOne( filter , updatedDoc );
+      const result = await manuCollection.updateOne(filter, updatedDoc);
       res.send(result);
     })
 
-    app.post('/manu',  verifyToken, verifyAdmin, async (req, res) => {
+    app.post('/manu', verifyToken, verifyAdmin, async (req, res) => {
       const manu = req.body;
       const result = await manuCollection.insertOne(manu);
       res.send(result);
     })
-    app.delete('/manu/:id' ,verifyToken, verifyAdmin, async(req , res) => {
+    app.delete('/manu/:id', verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       console.log(id)
       const query = { _id: new ObjectId(id) };
@@ -186,20 +186,33 @@ async function run() {
       const result = await cartsCollection.deleteOne(query);
       res.send(result);
     })
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
+    // Payment PaymentIntent 
+    app.post("/create-payment-intent", async (req, res) => {
+      const {price } = req.body;
+      const amount = parseInt(price * 100);
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+      res.status(201).send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    })
+      // Send a ping to confirm a successful connection
+      await client.db("admin").command({ ping: 1 });
+      console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } finally {
+      // Ensures that the client will close when you finish/error
+      // await client.close();
+    }
   }
-}
 run().catch(console.dir);
 
-app.get('/', (req, res) => {
-  res.send('boss is sitings');
-})
+  app.get('/', (req, res) => {
+    res.send('boss is sitings');
+  })
 
-app.listen(port, () => {
-  console.log(`server is running on port ${port}`);
-})
+  app.listen(port, () => {
+    console.log(`server is running on port ${port}`);
+  })
